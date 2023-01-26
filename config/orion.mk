@@ -66,7 +66,8 @@ PRODUCT_PACKAGES += \
 	GameSpace \
 	LMOFreeform \
     LMOFreeformSidebar \
-	OmniStyle
+	OmniStyle \
+	Miniature
 
 # FaceUnlock
 ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
