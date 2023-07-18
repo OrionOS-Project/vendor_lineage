@@ -4,6 +4,12 @@ $(call inherit-product-if-exists, vendor/extra/product.mk)
 # Allow vendor prebuilt repos to exclude themselves from bp scanning
 -include $(sort $(wildcard vendor/*/*/exclude-bp.mk))
 
+# Audio
+$(call inherit-product, vendor/lineage/config/audio.mk)
+
+# Fonts
+include vendor/fontage/config.mk
+
 PRODUCT_BRAND ?= OrionOS
 
 # FaceUnlock
