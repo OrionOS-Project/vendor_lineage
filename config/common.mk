@@ -109,6 +109,10 @@ endif
 # Do not include art debug targets
 PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
 
+# ANGLE
+PRODUCT_COPY_FILES += \
+    vendor/lineage/prebuilt/common/etc/permissions/product-privapp-permissions-aosp.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/product-privapp-permissions-aosp.xml
+
 # Strip the local variable table and the local variable type table to reduce
 # the size of the system image. This has no bearing on stack traces, but will
 # leave less information available via JDWP.
