@@ -39,8 +39,10 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
 
 # Extra packages
 PRODUCT_PACKAGES += \
-	BatteryStatsViewer \
-	GameSpace \
+    BatteryStatsViewer \
+    GameSpace \
+    LMOFreeform \
+    LMOFreeformSidebar \
     MatLog \
 	OmniStyle
 
