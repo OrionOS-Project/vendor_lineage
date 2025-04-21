@@ -48,6 +48,10 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     dalvik.vm.dex2oat64.enabled=true
 
+# Extra packages
+PRODUCT_PACKAGES += \
+    BatteryStatsViewer
+
 # FaceUnlock
 ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
 PRODUCT_PACKAGES += \
