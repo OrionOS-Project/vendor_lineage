@@ -83,6 +83,3 @@ endif
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.storage_manager.show_opt_in=false
 
-# UDFPS Animation effects
-PRODUCT_PACKAGES += \
-    UdfpsAnimations
