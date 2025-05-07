@@ -65,7 +65,8 @@ PRODUCT_PACKAGES += \
     BatteryStatsViewer \
 	GameSpace \
 	LMOFreeform \
-    LMOFreeformSidebar
+    LMOFreeformSidebar \
+	OmniStyle
 
 # FaceUnlock
 ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
