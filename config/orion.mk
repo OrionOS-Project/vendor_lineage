@@ -67,7 +67,8 @@ PRODUCT_PACKAGES += \
 	LMOFreeform \
     LMOFreeformSidebar \
 	OmniStyle \
-	Miniature
+	Miniature \
+	SoundPickerPrebuilt_32000142
 
 # FaceUnlock
 ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
