@@ -69,6 +69,7 @@ PRODUCT_PACKAGES += \
     BatteryStatsViewer \
 	GameSpace \
 	LMOFreeform \
+    CertifiedKeyboxOverlay \
     LMOFreeformSidebar \
 	OmniStyle \
 	Miniature \
