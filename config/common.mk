@@ -6,6 +6,16 @@ $(call inherit-product-if-exists, vendor/extra/product.mk)
 
 PRODUCT_BRAND ?= OrionOS
 
+# FaceUnlock
+ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
+PRODUCT_PACKAGES += \
+    FaceUnlock
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    ro.face.sense_service=true
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.biometrics.face.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/android.hardware.biometrics.face.xml
+endif
+
 ifeq ($(PRODUCT_GMS_CLIENTID_BASE),)
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.com.google.clientidbase=android-google
