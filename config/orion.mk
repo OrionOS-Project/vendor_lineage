@@ -40,6 +40,12 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PRODUCT_PROPERTIES += \
      ro.launcher.blur.appLaunch=0
 
+# ColumbusService
+ifneq ($(TARGET_SUPPORTS_QUICK_TAP),false)
+PRODUCT_PACKAGES += \
+    ColumbusService
+endif
+
 # Disable async MTE on system_server
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     arm64.memtag.process.system_server=off
@@ -51,7 +57,9 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
 # Extra packages
 PRODUCT_PACKAGES += \
     BatteryStatsViewer \
-	GameSpace
+	GameSpace \
+	LMOFreeform \
+    LMOFreeformSidebar
 
 # FaceUnlock
 ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
