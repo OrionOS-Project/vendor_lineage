@@ -50,7 +50,8 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
 
 # Extra packages
 PRODUCT_PACKAGES += \
-    BatteryStatsViewer
+    BatteryStatsViewer \
+	GameSpace
 
 # FaceUnlock
 ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
