@@ -1,26 +1,13 @@
 # Allow vendor/extra to override any property by setting it first
 $(call inherit-product-if-exists, vendor/extra/product.mk)
 
+# Orion Config
+$(call inherit-product-if-exists, vendor/lineage/config/orion.mk)
+
 # Allow vendor prebuilt repos to exclude themselves from bp scanning
 -include $(sort $(wildcard vendor/*/*/exclude-bp.mk))
 
-# Audio
-$(call inherit-product, vendor/lineage/config/audio.mk)
-
-# Fonts
-include vendor/fontage/config.mk
-
 PRODUCT_BRAND ?= OrionOS
-
-# FaceUnlock
-ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
-PRODUCT_PACKAGES += \
-    FaceUnlock
-PRODUCT_SYSTEM_EXT_PROPERTIES += \
-    ro.face.sense_service=true
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.biometrics.face.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/android.hardware.biometrics.face.xml
-endif
 
 ifeq ($(PRODUCT_GMS_CLIENTID_BASE),)
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
@@ -282,8 +269,4 @@ include vendor/lineage/config/orion_bootanimation.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
 -include vendor/lineage/config/partner_gms.mk
-
-ifeq ($(WITH_GMS), true)
-$(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
-endif
 

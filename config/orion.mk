@@ -1,0 +1,66 @@
+# Audio
+$(call inherit-product, vendor/lineage/config/audio.mk)
+
+# Fonts
+include vendor/fontage/config.mk
+
+# DRM Service
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    drm.service.enabled=true \
+    media.mediadrmservice.enable=true
+
+# Disable RescueParty due to high risk of data loss
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    persist.sys.disable_rescue=true
+
+# Disable touch video heatmap to reduce latency, motion jitter, and CPU usage
+# on supported devices with Deep Press input classifier HALs and models
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.input.video_enabled=false
+
+# Blur
+ifndef TARGET_NOT_USES_BLUR
+    USES_BLUR=1
+endif
+
+ifeq ($(TARGET_NOT_USES_BLUR),true)
+    USES_BLUR=0
+else
+    USES_BLUR=1
+endif
+
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.sf.blurs_are_expensive=$(USES_BLUR) \
+    ro.surface_flinger.supports_background_blur=$(USES_BLUR) \
+    persist.sysui.disableBlur=$(shell echo $$((1 - $(USES_BLUR))))
+
+PRODUCT_PRODUCT_PROPERTIES += \
+     ro.launcher.blur.appLaunch=0
+
+# Disable async MTE on system_server
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    arm64.memtag.process.system_server=off
+
+# Enable dex2oat64 to do dexopt
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    dalvik.vm.dex2oat64.enabled=true
+
+# FaceUnlock
+ifneq ($(TARGET_FACE_UNLOCK_SUPPORTED),false)
+PRODUCT_PACKAGES += \
+    FaceUnlock
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    ro.face.sense_service=true
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.biometrics.face.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/android.hardware.biometrics.face.xml
+endif
+
+# GApps
+ifeq ($(WITH_GMS), true)
+$(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
+endif
+
+# StorageManager configuration
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.storage_manager.show_opt_in=false
+
