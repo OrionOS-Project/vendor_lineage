@@ -74,8 +74,8 @@ PRODUCT_PACKAGES += \
     BatteryStatsViewer \
 	GameSpace \
 	LMOFreeform \
-    CertifiedKeyboxOverlay \
-    LMOFreeformSidebar \
+    	CertifiedKeyboxOverlay \
+	LMOFreeformSidebar \
 	OmniStyle \
 	Miniature \
 	SoundPickerPrebuilt_32000142
@@ -84,7 +84,7 @@ PRODUCT_PACKAGES += \
 TARGET_FACE_UNLOCK_SUPPORTED ?= $(TARGET_SUPPORTS_64_BIT_APPS)
 ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)
     PRODUCT_PACKAGES += \
-        ParanoidSense
+        FaceUnlock
     PRODUCT_SYSTEM_EXT_PROPERTIES += \
         ro.face.sense_service=true
     PRODUCT_COPY_FILES += \
