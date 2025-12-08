@@ -140,7 +140,11 @@ TARGET_SCREEN_HEIGHT ?= 1920
 # Lineage packages
 ifeq ($(PRODUCT_IS_ATV),)
 PRODUCT_PACKAGES += \
-    ExactCalculator \
+    ExactCalculator 
+endif
+
+ifneq ($(ORION_GAPPS),true)
+PRODUCT_PACKAGES += \
     Jelly
 endif
 
@@ -190,9 +194,6 @@ PRODUCT_COPY_FILES += \
 # Gapps
 ifeq ($(ORION_GAPPS),true)
 include vendor/google/gms/config.mk
-
-PRODUCT_PACKAGES += \
-    UpdaterGMSOverlay
 endif
 
 # Openssh

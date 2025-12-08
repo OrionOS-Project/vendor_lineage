@@ -13,10 +13,11 @@ PRODUCT_PACKAGES += \
     Aperture
 endif
 
-ifneq ($(TARGET_EXCLUDES_AUDIOFX),true)
+ifneq ($(ORION_GAPPS),true)
 PRODUCT_PACKAGES += \
     AudioFX
 endif
+
 
 # Extra cmdline tools
 PRODUCT_PACKAGES += \
