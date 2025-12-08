@@ -19,8 +19,8 @@ ifneq ($(filter $(CURRENT_DEVICE),$(DEVICE_LIST)),)
     endif
 endif
 
-ifeq ($(WITH_GMS),true)
-ORION_BUILD_VARIANT := Gapps
+ifeq ($(ORION_GAPPS),true)
+ORION_BUILD_VARIANT := GApps
 else
 ORION_BUILD_VARIANT := Vanilla
 endif

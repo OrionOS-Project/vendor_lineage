@@ -1,5 +1,5 @@
 # GMS
-ifeq ($(WITH_GMS),true)
+ifeq ($(ORION_GAPPS),true)
 WITH_GMS_COMMS_SUITE := true
 endif
 

@@ -96,11 +96,6 @@ else
         FaceEnrollSettingsOverlay #FaceEnroll - Settings RRO
 endif
 
-# GApps
-ifeq ($(WITH_GMS), true)
-$(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
-endif
-
 # StorageManager configuration
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.storage_manager.show_opt_in=false

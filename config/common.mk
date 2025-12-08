@@ -187,6 +187,14 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
 PRODUCT_COPY_FILES += \
     vendor/lineage/prebuilt/common/bin/wipe-frp.sh:$(TARGET_COPY_OUT_RECOVERY)/root/system/bin/wipe-frp
 
+# Gapps
+ifeq ($(ORION_GAPPS),true)
+include vendor/google/gms/config.mk
+
+PRODUCT_PACKAGES += \
+    UpdaterGMSOverlay
+endif
+
 # Openssh
 PRODUCT_PACKAGES += \
     scp \
@@ -289,5 +297,5 @@ include vendor/lineage/config/orion_bootanimation.mk
 -include vendor/lineage-priv/keys/keys.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
--include vendor/lineage/config/partner_gms.mk
+
 
