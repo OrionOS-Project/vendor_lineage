@@ -1,11 +1,8 @@
 # Audio
 $(call inherit-product, vendor/lineage/config/audio.mk)
 
-# Fonts
-include vendor/fontage/config.mk
-
-# Overlays
-include vendor/overlay/overlays.mk
+# Overlay
+include vendor/addons/config.mk
 
 # Certification
 $(call inherit-product, vendor/certification/config.mk)
@@ -65,7 +62,7 @@ PRODUCT_PACKAGES += \
     BatteryStatsViewer \
 	GameSpace \
 	LMOFreeform \
-    	CertifiedKeyboxOverlay \
+    CertifiedKeyboxOverlay \
 	LMOFreeformSidebar \
 	OmniStyle \
 	Miniature \

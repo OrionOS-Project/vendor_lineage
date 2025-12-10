@@ -145,7 +145,8 @@ endif
 
 ifneq ($(ORION_GAPPS),true)
 PRODUCT_PACKAGES += \
-    Jelly
+    Jelly \
+    PrebuiltDeskClockGoogle
 endif
 
 ifeq ($(PRODUCT_IS_AUTOMOTIVE),)
@@ -191,9 +192,46 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
 PRODUCT_COPY_FILES += \
     vendor/lineage/prebuilt/common/bin/wipe-frp.sh:$(TARGET_COPY_OUT_RECOVERY)/root/system/bin/wipe-frp
 
-# Gapps
+# GAPPS
 ifeq ($(ORION_GAPPS),true)
-include vendor/google/gms/config.mk
+
+#     # Default notification/alarm sounds
+#     PRODUCT_PRODUCT_PROPERTIES += \
+#         ro.config.notification_sound=Eureka.ogg \
+#         ro.config.alarm_alert=Bright_morning.ogg \
+#         ro.config.ringtone=The_big_adventure.ogg
+
+    # Gboard Props
+    PRODUCT_PRODUCT_PROPERTIES += \
+        ro.com.google.ime.bs_theme=true \
+        ro.com.google.ime.system_lm_dir=/product/usr/share/ime/google/d3_lms
+
+    # Pixel Launcher (optional)
+    ifeq ($(ORION_INCLUDE_PIXEL_LAUNCHER),true)
+        PRODUCT_PRODUCT_PROPERTIES += persist.sys.nexuslauncher=1
+        $(call inherit-product, vendor/pixel/launcher/products/launcher.mk)
+        $(call inherit-product, vendor/pixel/themepicker/products/themepicker.mk)
+    else
+        PRODUCT_PRODUCT_PROPERTIES += persist.sys.nexuslauncher=0
+    endif
+
+    # SetupWizard Props
+    PRODUCT_PRODUCT_PROPERTIES += \
+        ro.setupwizard.esim_cid_ignore=00000001 \
+        setupwizard.feature.baseline_setupwizard_enabled=true \
+        setupwizard.feature.day_night_mode_enabled=true \
+        setupwizard.feature.enable_gil=false \
+        setupwizard.feature.enable_quick_start_flow=true \
+        setupwizard.feature.enable_restore_anytime=true \
+        setupwizard.feature.enable_wifi_tracker=true \
+        setupwizard.feature.lifecycle_refactoring=true \
+        setupwizard.feature.notification_refactoring=true \
+        setupwizard.feature.portal_notification=true \
+        setupwizard.feature.provisioning_profile_mode=true
+
+    # Include Google Mobile Services
+    $(call inherit-product, vendor/pixel/gms/products/gms.mk)
+
 endif
 
 # Openssh
