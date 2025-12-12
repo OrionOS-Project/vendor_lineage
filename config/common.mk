@@ -195,25 +195,13 @@ PRODUCT_COPY_FILES += \
 # GAPPS
 ifeq ($(ORION_GAPPS),true)
 
-#     # Default notification/alarm sounds
-#     PRODUCT_PRODUCT_PROPERTIES += \
-#         ro.config.notification_sound=Eureka.ogg \
-#         ro.config.alarm_alert=Bright_morning.ogg \
-#         ro.config.ringtone=The_big_adventure.ogg
-
     # Gboard Props
     PRODUCT_PRODUCT_PROPERTIES += \
         ro.com.google.ime.bs_theme=true \
         ro.com.google.ime.system_lm_dir=/product/usr/share/ime/google/d3_lms
 
-    # Pixel Launcher (optional)
-    ifeq ($(ORION_INCLUDE_PIXEL_LAUNCHER),true)
-        PRODUCT_PRODUCT_PROPERTIES += persist.sys.nexuslauncher=1
-        $(call inherit-product, vendor/pixel/launcher/products/launcher.mk)
-        $(call inherit-product, vendor/pixel/themepicker/products/themepicker.mk)
-    else
+    # Launcher props
         PRODUCT_PRODUCT_PROPERTIES += persist.sys.nexuslauncher=0
-    endif
 
     # SetupWizard Props
     PRODUCT_PRODUCT_PROPERTIES += \
