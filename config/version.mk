@@ -9,12 +9,12 @@ CURRENT_DEVICE := $(wordlist 2,3,$(subst _, ,$(TARGET_PRODUCT)))
 DEVICE_LIST := $(file < vendor/official_maintainer/orion.devices)
 MAINTAINER_LIST := $(file < vendor/official_maintainer/orion.maintainers)
 
-ORION_BUILD_TYPE ?= Unofficial
+ORION_BUILD_STATUS ?= Unofficial
 
 ifneq ($(filter $(CURRENT_DEVICE),$(DEVICE_LIST)),)
     ifneq ($(ORION_MAINTAINER),)
         ifneq ($(filter $(ORION_MAINTAINER),$(MAINTAINER_LIST)),)
-            ORION_BUILD_TYPE := Official
+            ORION_BUILD_STATUS := Official
         endif
     endif
 endif
@@ -26,7 +26,7 @@ ORION_BUILD_VARIANT := Vanilla
 endif
 
 # Internal Version
-LINEAGE_VERSION := OrionOS-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(ORION_VERSION)-$(LINEAGE_BUILD)-$(ORION_BUILD_TYPE)-$(ORION_BUILD_VARIANT)-$(shell date +%Y%m%d)
+LINEAGE_VERSION := OrionOS-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(ORION_VERSION)-$(LINEAGE_BUILD)-$(ORION_BUILD_STATUS)-$(ORION_BUILD_VARIANT)-$(shell date +%Y%m%d)
 
 # Display version
 LINEAGE_DISPLAY_VERSION := v$(ORION_VERSION)-$(shell date +%Y%m%d)
@@ -38,7 +38,7 @@ PRODUCT_SYSTEM_PROPERTIES += \
     ro.orion.display.version=$(LINEAGE_DISPLAY_VERSION) \
     ro.orion.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
     ro.modversion=$(ORION_VERSION) \
-    ro.orion.build.type=$(ORION_BUILD_TYPE) \
+    ro.orion.build.status=$(ORION_BUILD_STATUS) \
     ro.orion.maintainer=$(ORION_MAINTAINER) \
     ro.orion.maintainer_link=$(ORION_MAINTAINER_LINK) \
     ro.orion.build.variant=$(ORION_BUILD_VARIANT)
