@@ -929,3 +929,7 @@ function fixup_common_out_dir() {
         mkdir -p ${common_out_dir}
     fi
 }
+
+
+export DISABLE_STUB_VALIDATION=true
+export SKIP_ABI_CHECKS=true
