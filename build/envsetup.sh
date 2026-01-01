@@ -7,7 +7,14 @@ export RUST_AOSP_PREBUILTS_VERSION="${RUST_VERSION}"
 # check to see if the supplied product is one we can build
 function check_product()
 {
+echo " ██████╗ ██████╗ ██╗ ██████╗ ███╗   ██╗"
+echo "██╔═══██╗██╔══██╗██║██╔═══██╗████╗  ██║"
+echo "██║   ██║██████╔╝██║██║   ██║██╔██╗ ██║"
+echo "██║   ██║██╔══██╗██║██║   ██║██║╚██╗██║"
+echo "╚██████╔╝██║  ██║██║╚██████╔╝██║ ╚████║"
+echo " ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝"
     local T=$(gettop)
+    
     if [ ! "$T" ]; then
         echo "Couldn't locate the top of the tree. Try setting TOP." >&2
         return
