@@ -26,13 +26,20 @@ PRODUCT_PRODUCT_PROPERTIES += \
 
 # Blur
 TARGET_ENABLE_BLUR ?= false
+
 ifeq ($(TARGET_ENABLE_BLUR),true)
-PRODUCT_SYSTEM_PROPERTIES += \
-    ro.custom.blur.enable=true
+USES_BLUR=1
 else
-PRODUCT_SYSTEM_PROPERTIES += \
-    ro.custom.blur.enable=false
+USES_BLUR=0
 endif
+
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.sf.blurs_are_expensive=$(USES_BLUR) \
+    ro.surface_flinger.supports_background_blur=$(USES_BLUR) \
+    persist.sysui.disableBlur=$(shell echo $$((1 - $(USES_BLUR))))
+
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.launcher.blur.appLaunch=0
 
 # ColumbusService
 ifneq ($(TARGET_SUPPORTS_QUICK_TAP),false)
