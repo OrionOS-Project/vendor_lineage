@@ -4,43 +4,50 @@ $(call inherit-product-if-exists, vendor/extra/product.mk)
 # Orion Config
 $(call inherit-product-if-exists, vendor/lineage/config/orion.mk)
 
+# Exclude repos from bp scanning
+PRODUCT_SOURCE_ROOT_DIRS += -kernel/platform
+PRODUCT_SOURCE_ROOT_DIRS += -prebuilts/misc/protobuf_vendorcompat
+
 # Allow vendor prebuilt repos to exclude themselves from bp scanning
 -include $(sort $(wildcard vendor/*/*/exclude-bp.mk))
 
 PRODUCT_BRAND ?= OrionOS
 
 ifeq ($(PRODUCT_GMS_CLIENTID_BASE),)
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.com.google.clientidbase=android-google
 else
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.com.google.clientidbase=$(PRODUCT_GMS_CLIENTID_BASE)
 endif
 
 ifeq ($(PRODUCT_IS_ATV),true)
 ifeq ($(PRODUCT_ATV_CLIENTID_BASE),)
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.oem.key1=ATV00100020
 else
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.oem.key1=$(PRODUCT_ATV_CLIENTID_BASE)
 endif
 endif
 
 ifeq ($(TARGET_BUILD_VARIANT),eng)
 # Disable ADB authentication
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=0
+PRODUCT_SYSTEM_EXT_PROPERTIES += ro.adb.secure=0
 else
 ifdef WITH_ADB_INSECURE
 # Forcebly disable ADB authentication
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=0
+PRODUCT_SYSTEM_EXT_PROPERTIES += ro.adb.secure=0
 else
 # Enable ADB authentication
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=1
+PRODUCT_SYSTEM_EXT_PROPERTIES += ro.adb.secure=1
+
+# Set ro.debuggable=0 for userdebug
+PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG := true
 endif
 
 # Disable extra StrictMode features on all non-engineering builds
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += persist.sys.strictmode.disable=true
+PRODUCT_PRODUCT_PROPERTIES += persist.sys.strictmode.disable=true
 endif
 
 # Fake Encryption 
@@ -55,6 +62,12 @@ PRODUCT_COPY_FILES += \
     vendor/lineage/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
     vendor/lineage/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions
 
+PRODUCT_PACKAGES += \
+    50-lineage.sh
+
+PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+    system/addon.d/50-lineage.sh
+
 ifneq ($(strip $(AB_OTA_PARTITIONS) $(AB_OTA_POSTINSTALL_CONFIG)),)
 PRODUCT_COPY_FILES += \
     vendor/lineage/prebuilt/common/bin/backuptool_ab.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.sh \
@@ -67,7 +80,7 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/bin/backuptool_postinstall.sh
 
 ifneq ($(TARGET_BUILD_VARIANT),user)
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.ota.allow_downgrade=true
 endif
 endif
@@ -101,8 +114,8 @@ PRODUCT_COPY_FILES += \
     vendor/lineage/config/permissions/org.lineageos.android.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.lineageos.android.xml
 
 # Enforce privapp-permissions whitelist
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    ro.control_privapp_permissions?=enforce
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.control_privapp_permissions=enforce
 
 ifneq ($(TARGET_DISABLE_LINEAGE_SDK), true)
 # Lineage SDK
@@ -121,6 +134,11 @@ PRODUCT_COPY_FILES += \
 # leave less information available via JDWP.
 PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
 
+# Enable whole-program R8 Java optimizations for SystemUI and system_server,
+# but also allow explicit overriding for testing and development.
+SYSTEM_OPTIMIZE_JAVA ?= true
+SYSTEMUI_OPTIMIZE_JAVA ?= true
+
 # Disable vendor restrictions
 PRODUCT_RESTRICT_VENDOR_FILES := false
 
@@ -132,6 +150,10 @@ endif
 # Bootanimation
 TARGET_SCREEN_WIDTH ?= 1080
 TARGET_SCREEN_HEIGHT ?= 1920
+
+# Lineage interfaces
+PRODUCT_PACKAGES += \
+    framework_compatibility_matrix.lineage.xml
 
 # Lineage packages
 ifeq ($(PRODUCT_IS_ATV),)
@@ -169,7 +191,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/bin/curl \
     system/bin/getcap \
-    system/bin/setcap
+    system/bin/setcap \
+    system/%/libzstd.so
 
 # Filesystems tools
 PRODUCT_PACKAGES += \
@@ -238,9 +261,17 @@ PRODUCT_COPY_FILES += \
 # Google Assistant
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.opa.eligible_device?=true
+    
+# OverlayFS
+PRODUCT_PACKAGES_DEBUG += \
+    disable-overlays
+
+# rsync
+PRODUCT_PACKAGES += \
+    rsync
 
 # Storage manager
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.storage_manager.enabled=true
 
 # These packages are excluded from user builds
@@ -272,11 +303,11 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
     SettingsGoogle \
     SystemUIGoogle
 
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     dalvik.vm.systemuicompilerfilter=speed
 
 ifeq ($(TARGET_BUILD_VARIANT),userdebug)
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     debug.sf.enable_transaction_tracing=false
 endif
 
@@ -302,14 +333,15 @@ PRODUCT_PACKAGES += \
 # Translations
 CUSTOM_LOCALES += \
     ast_ES \
+    ckb_IQ \
+    ckb_IR \
     gd_GB \
     cy_GB \
-    fur_IT
+    fur_IT \
+    nn_NO
 
 PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/crowdin/overlay
 PRODUCT_PACKAGE_OVERLAYS += vendor/crowdin/overlay
-
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += vendor/lineage/config/device_framework_matrix.xml
 
 PRODUCT_EXTRA_RECOVERY_KEYS += \
     vendor/lineage/build/target/product/security/lineage

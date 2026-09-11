@@ -1,8 +1,8 @@
 PRODUCT_VERSION_MAJOR = 16
-PRODUCT_VERSION_MINOR = 0
-ORION_VERSION = Ozone
+PRODUCT_VERSION_MINOR = 2
+ORION_VERSION = Chlorine
 ORION_RELEASE_TYPE = Beta
-ORION_MAINTAINER_LINK ?= https://orionos.tech
+ORION_MAINTAINER_LINK ?= https://orionos-project.com
 ORION_MAINTAINER ?= Unknown
 
 CURRENT_DEVICE := $(wordlist 2,3,$(subst _, ,$(TARGET_PRODUCT)))
@@ -33,6 +33,7 @@ LINEAGE_DISPLAY_VERSION := v$(ORION_VERSION)-$(shell date +%Y%m%d)
 
 ORION_BUILD_INFO := $(LINEAGE_VERSION)
 
+<<<<<<< HEAD
 PRODUCT_SYSTEM_PROPERTIES += \
     ro.orion.build.version=$(LINEAGE_VERSION) \
     ro.orion.display.version=$(LINEAGE_DISPLAY_VERSION) \
@@ -50,3 +51,11 @@ PRODUCT_SYSTEM_PROPERTIES += \
     dalvik.vm.dex2oat-cpu-set=$(DEX2OAT_CORES) \
     dalvik.vm.restore-dex2oat-cpu-set=$(DEX2OAT_CORES)
 
+=======
+# LineageOS version properties
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.lineage.version=$(LINEAGE_VERSION) \
+    ro.lineage.display.version=$(LINEAGE_DISPLAY_VERSION) \
+    ro.lineage.build.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
+    ro.lineage.releasetype=$(LINEAGE_BUILDTYPE)
+>>>>>>> 10a5dcc61e980d6299bb559fbbbc1e867cc28862

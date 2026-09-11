@@ -1,27 +1,17 @@
 # Pixel Tablet
 
-# Usage: ${device_repos[@]}
-device_repos=(
-  device/google/tangorpro
-)
-
 # Updated semi-manually via pixel/update-any-var.sh
 
-readonly build_id="BP2A.250805.005"
+readonly build_id="BP4A.260205.001"
 
 # Updated automatically via pixel/update-device-vars.sh
 
-readonly prev_aosp_tag="aml_tz6_351400020"
-readonly aosp_tag="unknown"
+readonly build_number="14624666"
 
-readonly build_number="13691446"
+readonly image_url="https://dl.google.com/dl/android/aosp/tangorpro-bp4a.260205.001-factory-2808cbaf.zip"
+readonly image_sha256="2808cbaf6fdb9527c02150253d624de2986e98df3d342755b8efd54f583ce8ad"
 
-readonly image_url="https://dl.google.com/dl/android/aosp/tangorpro-bp2a.250805.005-factory-6f21846e.zip"
-readonly image_sha256="6f21846e7ce73d88947e26ff35bf34dffabc1ae12f51281dc3460248ee62555c"
+readonly flash_url="https://flash.android.com/build/14624666?target=tangorpro-user&signed"
 
-readonly flash_url="https://flash.android.com/build/13691446?target=tangorpro-user&signed"
-
-readonly ota_url="https://dl.google.com/dl/android/aosp/tangorpro-ota-bp2a.250805.005-dfcd16c8.zip"
-readonly ota_sha256="dfcd16c88192c595904188396211a1b3c75dea2fe490cf72e1711777ef8607ec"
-
-readonly security_patch="unknown"
+readonly ota_url="https://dl.google.com/dl/android/aosp/tangorpro-ota-bp4a.260205.001-3f225ce3.zip"
+readonly ota_sha256="3f225ce33c8a1599bd135b1b8bba365fcc6c1d1105926cc3a1c1ac1deef648d2"

@@ -1,27 +1,17 @@
 # Pixel Fold
 
-# Usage: ${device_repos[@]}
-device_repos=(
-  device/google/felix
-)
-
 # Updated semi-manually via pixel/update-any-var.sh
 
-readonly build_id="BP2A.250805.005"
+readonly build_id="BP4A.260205.001"
 
 # Updated automatically via pixel/update-device-vars.sh
 
-readonly prev_aosp_tag="aml_tz6_351400020"
-readonly aosp_tag="unknown"
+readonly build_number="14624666"
 
-readonly build_number="13691446"
+readonly image_url="https://dl.google.com/dl/android/aosp/felix-bp4a.260205.001-factory-31fd0632.zip"
+readonly image_sha256="31fd0632ff11a84a711389d106f3d4f96c9b1959ab99eaec332abb375b772b1e"
 
-readonly image_url="https://dl.google.com/dl/android/aosp/felix-bp2a.250805.005-factory-0349b08a.zip"
-readonly image_sha256="0349b08ad980489d7395315660c844f62e0867c3dec54246f3bfe2bac601a541"
+readonly flash_url="https://flash.android.com/build/14624666?target=felix-user&signed"
 
-readonly flash_url="https://flash.android.com/build/13691446?target=felix-user&signed"
-
-readonly ota_url="https://dl.google.com/dl/android/aosp/felix-ota-bp2a.250805.005-5f920d94.zip"
-readonly ota_sha256="5f920d94bbd2bb5f633c803b16e8d49c359a36f2883e92313cdbadc8d0e88709"
-
-readonly security_patch="unknown"
+readonly ota_url="https://dl.google.com/dl/android/aosp/felix-ota-bp4a.260205.001-b8f82d69.zip"
+readonly ota_sha256="b8f82d69dc402b09ea1c313724e1958d9d888e2090a324e0951fe3a16ff7ff53"

@@ -1,27 +1,17 @@
 # Pixel 8a
 
-# Usage: ${device_repos[@]}
-device_repos=(
-  device/google/akita
-)
-
 # Updated semi-manually via pixel/update-any-var.sh
 
-readonly build_id="BP2A.250805.005"
+readonly build_id="BP4A.260205.001"
 
 # Updated automatically via pixel/update-device-vars.sh
 
-readonly prev_aosp_tag="aml_tz6_351400020"
-readonly aosp_tag="unknown"
+readonly build_number="14624666"
 
-readonly build_number="13691446"
+readonly image_url="https://dl.google.com/dl/android/aosp/akita-bp4a.260205.001-factory-661cb49b.zip"
+readonly image_sha256="661cb49bab85398126ef0bf44e4d81282c4c87e19f4dffa0e3f90017c32d08b0"
 
-readonly image_url="https://dl.google.com/dl/android/aosp/akita-bp2a.250805.005-factory-6662bfdb.zip"
-readonly image_sha256="6662bfdbe6e108bf86d01720ae6e8c189f14857a89069898d9a5906a3cef6a71"
+readonly flash_url="https://flash.android.com/build/14624666?target=akita-user&signed"
 
-readonly flash_url="https://flash.android.com/build/13691446?target=akita-user&signed"
-
-readonly ota_url="https://dl.google.com/dl/android/aosp/akita-ota-bp2a.250805.005-ba25fe5e.zip"
-readonly ota_sha256="ba25fe5edd59541b4dceee5e7ba5072651b3dd30a6dbb313f5335dc06eb2620d"
-
-readonly security_patch="unknown"
+readonly ota_url="https://dl.google.com/dl/android/aosp/akita-ota-bp4a.260205.001-cb9dc506.zip"
+readonly ota_sha256="cb9dc506c4139b8b05faead9e3cd13fd6586de857b3f6734b347f427a22a1bac"

@@ -1,11 +1,4 @@
 prebuilt_etc_xml {
-    name: "apns-conf.xml",
-    product_specific: true,
-    src: "etc/apns-conf.xml",
-    schema: ":apns-conf-schema",
-}
-
-prebuilt_etc_xml {
     name: "sensitive_pn.xml",
     product_specific: true,
     src: "etc/sensitive_pn.xml",
@@ -17,4 +10,9 @@ prebuilt_etc_xml {
     product_specific: true,
     src: "etc/lineage-component-overrides.xml",
     sub_dir: "sysconfig",
+}
+
+prebuilt_addon_d {
+    name: "50-lineage.sh",
+    src: "bin/50-lineage.sh",
 }

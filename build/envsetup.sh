@@ -1,20 +1,13 @@
-CLANG_VERSION=$(build/soong/scripts/get_clang_version.py)
+CLANG_VERSION=$(${ANDROID_BUILD_TOP}/build/soong/scripts/get_clang_version.py)
 export LLVM_AOSP_PREBUILTS_VERSION="${CLANG_VERSION}"
 
-RUST_VERSION=$(grep 'RustDefaultVersion =' build/soong/rust/config/global.go | awk '{print $3}' | awk -F '"' '{print $2}')
+RUST_VERSION=$(grep 'RustDefaultVersion =' ${ANDROID_BUILD_TOP}/build/soong/rust/config/global.go | awk '{print $3}' | awk -F '"' '{print $2}')
 export RUST_AOSP_PREBUILTS_VERSION="${RUST_VERSION}"
 
 # check to see if the supplied product is one we can build
 function check_product()
 {
-echo " ██████╗ ██████╗ ██╗ ██████╗ ███╗   ██╗"
-echo "██╔═══██╗██╔══██╗██║██╔═══██╗████╗  ██║"
-echo "██║   ██║██████╔╝██║██║   ██║██╔██╗ ██║"
-echo "██║   ██║██╔══██╗██║██║   ██║██║╚██╗██║"
-echo "╚██████╔╝██║  ██║██║╚██████╔╝██║ ╚████║"
-echo " ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝"
     local T=$(gettop)
-    
     if [ ! "$T" ]; then
         echo "Couldn't locate the top of the tree. Try setting TOP." >&2
         return
@@ -85,7 +78,7 @@ function eat()
         echo "Waiting for device..."
         adb wait-for-device-recovery
         echo "Found device"
-        if (adb shell getprop ro.orion.device | grep -q "$LINEAGE_BUILD"); then
+        if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD"); then
             echo "Rebooting to sideload for install"
             adb reboot sideload-auto-reboot
             adb wait-for-sideload
@@ -378,7 +371,7 @@ function installboot()
     adb wait-for-device-recovery
     adb root
     adb wait-for-device-recovery
-    if (adb shell getprop ro.orion.device | grep -q "$LINEAGE_BUILD");
+    if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD");
     then
         adb push $OUT/boot.img /cache/
         adb shell dd if=/cache/boot.img of=$PARTITION
@@ -416,7 +409,7 @@ function installrecovery()
     adb wait-for-device-recovery
     adb root
     adb wait-for-device-recovery
-    if (adb shell getprop ro.orion.device | grep -q "$LINEAGE_BUILD");
+    if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD");
     then
         adb push $OUT/recovery.img /cache/
         adb shell dd if=/cache/recovery.img of=$PARTITION
@@ -778,7 +771,7 @@ function dopush()
         echo "Device Found."
     fi
 
-    if (adb shell getprop ro.orion.device | grep -q "$LINEAGE_BUILD") || [ "$FORCE_PUSH" = "true" ];
+    if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD") || [ "$FORCE_PUSH" = "true" ];
     then
     # retrieve IP and PORT info if we're using a TCP connection
     TCPIPPORT=$(adb devices \
@@ -910,7 +903,7 @@ alias cmkap='dopush cmka'
 
 function repopick() {
     T=$(gettop)
-    $T/vendor/lineage/build/tools/repopick.py $@
+    $T/lineage/scripts/repopick/repopick.py "$@"
 }
 
 function sort-blobs-list() {
@@ -937,6 +930,95 @@ function fixup_common_out_dir() {
     fi
 }
 
+function build_kernel() {
+    if [[ "${SKIP_KERNEL_BUILD}" == "true" || "${SKIP_KERNEL_BUILD}" == "1" ]]; then
+        echo "Skipping kernel build"
+        return
+    fi
+    local lineage_version="lineage-$(_get_build_var_cached PRODUCT_VERSION_MAJOR).$(_get_build_var_cached PRODUCT_VERSION_MINOR)"
 
-export DISABLE_STUB_VALIDATION=true
-export SKIP_ABI_CHECKS=true
+    local target_kernel_device="$(_get_build_var_cached TARGET_KERNEL_DEVICE)"
+    local target_kernel_dir="${ANDROID_BUILD_TOP}/$(_get_build_var_cached TARGET_KERNEL_DIR)"
+    local target_kernel_source="$(_get_build_var_cached TARGET_KERNEL_PLATFORM_SOURCE)"
+
+    local KERNEL_BUILD_TOP="${ANDROID_BUILD_TOP}/out-kernel/${target_kernel_source}"
+
+    # Make sure we have the kernel source folder structure in place
+    if [ ! -d "${KERNEL_BUILD_TOP}/.repo" ]; then
+        echo "Kernel source ${KERNEL_BUILD_TOP} is missing, preparing folder structure"
+
+        # Copy .repo/repo from Android tree to allow nested `repo init`
+        mkdir -p "${KERNEL_BUILD_TOP}/.repo"
+        cp -R "${ANDROID_BUILD_TOP}/.repo/repo" "${KERNEL_BUILD_TOP}/.repo/repo"
+
+        # Allow custom .repo/project-objects dir
+        if [ -n "${KERNEL_REPO_PROJECT_OBJECTS_DIR}" ]; then
+            if [ ! -d "${KERNEL_REPO_PROJECT_OBJECTS_DIR}" ]; then
+                mkdir "${KERNEL_REPO_PROJECT_OBJECTS_DIR}"
+            fi
+            ln -sf "${KERNEL_REPO_PROJECT_OBJECTS_DIR}" "${KERNEL_BUILD_TOP}/.repo/project-objects"
+        fi
+
+        # Allow custom .repo/projects dir
+        if [ -n "${KERNEL_REPO_PROJECTS_DIR}" ]; then
+            if [ ! -d "${KERNEL_REPO_PROJECTS_DIR}" ]; then
+                mkdir "${KERNEL_REPO_PROJECTS_DIR}"
+            fi
+            ln -sf "${KERNEL_REPO_PROJECTS_DIR}" "${KERNEL_BUILD_TOP}/.repo/projects"
+        fi
+
+        # Mark as out dir to prevent build system from scanning it
+        touch "${KERNEL_BUILD_TOP}/.out-dir"
+    fi
+
+    # Init, sync, remove previous build output & build kernel
+    pushd "${KERNEL_BUILD_TOP}" > /dev/null
+    if [[ "${SKIP_KERNEL_SYNC}" != "true" && "${SKIP_KERNEL_SYNC}" != "1" ]]; then
+        echo "Syncing ${KERNEL_BUILD_TOP}"
+        local target_kernel_manifest=$(echo android_kernel_${target_kernel_source}_manifest | tr / _)
+        local repo_init_args=("-b" "${lineage_version}")
+        if [ -n "${LINEAGE_MIRROR}" ]; then
+            repo_init_args+=("--reference" "${LINEAGE_MIRROR}")
+        fi
+        if [ -n "${REPO_VERSION}" ]; then
+            repo_init_args+=("--repo-rev" "${REPO_VERSION}")
+        fi
+
+        yes | repo init -u https://github.com/LineageOS/${target_kernel_manifest}.git ${repo_init_args[@]} || [ $? -eq 141 ]
+        if [ $? -ne 0 ]; then
+            echo "Kernel source repo init failed"
+            popd > /dev/null
+            return 1
+        fi
+        if ! repo sync --detach --force-sync; then
+            echo "Kernel source repo sync failed"
+            popd > /dev/null
+            return 1
+        fi
+    fi
+    if [ -d "${KERNEL_BUILD_TOP}/out/${target_kernel_device}/dist" ]; then
+        rm -rf "${KERNEL_BUILD_TOP}/out/${target_kernel_device}/dist"
+    fi
+    if ! ./build_"${target_kernel_device}".sh; then
+        popd > /dev/null
+        return 1
+    fi
+    popd > /dev/null
+
+    # Remove previous kernel prebuilts
+    if [ -d "${target_kernel_dir}" ]; then
+        local find_args=("-maxdepth" "1" "-type" "f" "!" "-name" ".gitignore")
+        # Some kernels don't generate the module lists, in which case they're
+        # checked in next to the prebuilts. Don't delete what won't come back.
+        if [[ "$(_get_build_var_cached TARGET_PROVIDES_STATIC_MODULE_LISTS)" == "true" ]]; then
+            find_args+=("!" "-name" "*.modules.load*" "!" "-name" "*.modules.blocklist")
+        fi
+        find "${target_kernel_dir}" "${find_args[@]}" -delete
+    fi
+
+    # Copy the new kernel prebuilts
+    mkdir -p "${target_kernel_dir}"
+    cp -a "${KERNEL_BUILD_TOP}/out/${target_kernel_device}/dist/"* "${target_kernel_dir}/"
+    chmod -x "${target_kernel_dir}/"*
+    echo "Kernel build output copied to ${target_kernel_dir}/"
+}
