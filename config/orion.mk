@@ -49,7 +49,6 @@ PRODUCT_PACKAGES += \
     GameSpace \
     LMOFreeform \
     LMOFreeformSidebar \
-    MatLog \
 	OmniStyle
 
 # FaceUnlock
