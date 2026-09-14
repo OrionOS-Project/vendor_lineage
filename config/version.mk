@@ -1,45 +1,44 @@
-PRODUCT_VERSION_MAJOR = 23
+PRODUCT_VERSION_MAJOR = 16
 PRODUCT_VERSION_MINOR = 2
+ORION_VERSION = Chlorine
+ORION_RELEASE_TYPE = Beta
+ORION_MAINTAINER_LINK ?= https://orionos-project.com
+ORION_MAINTAINER ?= Unknown
 
-ifeq ($(LINEAGE_VERSION_APPEND_TIME_OF_DAY),true)
-    LINEAGE_BUILD_DATE := $(shell date -u +%Y%m%d_%H%M%S)
+CURRENT_DEVICE := $(wordlist 2,3,$(subst _, ,$(TARGET_PRODUCT)))
+DEVICE_LIST := $(file < vendor/official_maintainer/orion.devices)
+MAINTAINER_LIST := $(file < vendor/official_maintainer/orion.maintainers)
+
+ORION_BUILD_STATUS ?= Unofficial
+
+ifneq ($(filter $(CURRENT_DEVICE),$(DEVICE_LIST)),)
+    ifneq ($(ORION_MAINTAINER),)
+        ifneq ($(filter $(ORION_MAINTAINER),$(MAINTAINER_LIST)),)
+            ORION_BUILD_STATUS := Official
+        endif
+    endif
+endif
+
+ifeq ($(ORION_GAPPS),true)
+ORION_BUILD_VARIANT := GApps
 else
-    LINEAGE_BUILD_DATE := $(shell date -u +%Y%m%d)
+ORION_BUILD_VARIANT := Vanilla
 endif
 
-# Set LINEAGE_BUILDTYPE from the env RELEASE_TYPE, for jenkins compat
-
-ifndef LINEAGE_BUILDTYPE
-    ifdef RELEASE_TYPE
-        # Starting with "LINEAGE_" is optional
-        RELEASE_TYPE := $(shell echo $(RELEASE_TYPE) | sed -e 's|^LINEAGE_||g')
-        LINEAGE_BUILDTYPE := $(RELEASE_TYPE)
-    endif
-endif
-
-# Filter out random types, so it'll reset to UNOFFICIAL
-ifeq ($(filter RELEASE NIGHTLY SNAPSHOT EXPERIMENTAL,$(LINEAGE_BUILDTYPE)),)
-    LINEAGE_BUILDTYPE := UNOFFICIAL
-    LINEAGE_EXTRAVERSION :=
-endif
-
-ifeq ($(LINEAGE_BUILDTYPE), UNOFFICIAL)
-    ifneq ($(TARGET_UNOFFICIAL_BUILD_ID),)
-        LINEAGE_EXTRAVERSION := -$(TARGET_UNOFFICIAL_BUILD_ID)
-    endif
-endif
-
-LINEAGE_VERSION_SUFFIX := $(LINEAGE_BUILD_DATE)-$(LINEAGE_BUILDTYPE)$(LINEAGE_EXTRAVERSION)-$(LINEAGE_BUILD)
-
-# Internal version
-LINEAGE_VERSION := $(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(LINEAGE_VERSION_SUFFIX)
+# Internal Version
+LINEAGE_VERSION := OrionOS-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(ORION_VERSION)-$(LINEAGE_BUILD)-$(ORION_BUILD_STATUS)-$(ORION_BUILD_VARIANT)-$(shell date +%Y%m%d)
 
 # Display version
-LINEAGE_DISPLAY_VERSION := $(PRODUCT_VERSION_MAJOR)-$(LINEAGE_VERSION_SUFFIX)
+LINEAGE_DISPLAY_VERSION := v$(ORION_VERSION)-$(shell date +%Y%m%d)
 
-# LineageOS version properties
-PRODUCT_PRODUCT_PROPERTIES += \
-    ro.lineage.version=$(LINEAGE_VERSION) \
-    ro.lineage.display.version=$(LINEAGE_DISPLAY_VERSION) \
-    ro.lineage.build.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
-    ro.lineage.releasetype=$(LINEAGE_BUILDTYPE)
+ORION_BUILD_INFO := $(LINEAGE_VERSION)
+
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.orion.build.version=$(LINEAGE_VERSION) \
+    ro.orion.display.version=$(LINEAGE_DISPLAY_VERSION) \
+    ro.orion.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
+    ro.modversion=$(ORION_VERSION) \
+    ro.orion.build.status=$(ORION_BUILD_STATUS) \
+    ro.orion.maintainer=$(ORION_MAINTAINER) \
+    ro.orion.maintainer_link=$(ORION_MAINTAINER_LINK) \
+    ro.orion.build.variant=$(ORION_BUILD_VARIANT)
