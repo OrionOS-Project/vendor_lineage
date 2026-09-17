@@ -300,6 +300,14 @@ CUSTOM_LOCALES += \
     fur_IT \
     nn_NO
 
+PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+    system/etc/default-permissions/default_permissions_co.aospa.sense.xml \
+    system/etc/permissions/privapp_whitelist_co.aospa.sense.xml \
+    system/etc/sysconfig/hiddenapi-whitelist-co.aospa.sense.xml \
+    system/lib64/libFaceDetectCA.so \
+    system/lib64/libMegviiUnlock-jni-1.2.so \
+    system/lib64/libMegviiUnlock.so
+
 PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/crowdin/overlay
 PRODUCT_PACKAGE_OVERLAYS += vendor/crowdin/overlay
 
