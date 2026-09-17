@@ -1,6 +1,3 @@
-# Audio
-$(call inherit-product, vendor/lineage/config/audio.mk)
-
 # Additional props
 PRODUCT_PRODUCT_PROPERTIES += \
     dalvik.vm.debug.alloc=0 \
@@ -59,5 +56,3 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.biometrics.face.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/android.hardware.biometrics.face.xml
 endif
 
-# Fonts
-include vendor/fontage/config.mk

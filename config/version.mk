@@ -33,7 +33,7 @@ LINEAGE_DISPLAY_VERSION := v$(ORION_VERSION)-$(shell date +%Y%m%d)
 
 ORION_BUILD_INFO := $(LINEAGE_VERSION)
 
-PRODUCT_SYSTEM_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     ro.orion.build.version=$(LINEAGE_VERSION) \
     ro.orion.display.version=$(LINEAGE_DISPLAY_VERSION) \
     ro.orion.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
